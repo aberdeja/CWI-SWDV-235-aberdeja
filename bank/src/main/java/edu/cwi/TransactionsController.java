@@ -50,10 +50,10 @@ public class TransactionsController implements CrudHandler {
         ).render().toString();
     }
     @Override
+    // TransactionController.java
     public void getAll(Context ctx) {
         // Use ctx to render all transactions html
-        String view = this.renderTransactions();
-                ctx.html(view);
+        ctx.render("jte/transactions.jte", Map.of("transactions", transactions));
     }
 
     @Override
