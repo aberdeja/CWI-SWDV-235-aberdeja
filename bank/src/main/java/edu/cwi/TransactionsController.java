@@ -24,12 +24,10 @@ public class TransactionsController implements CrudHandler {
             ),
             body(
                 h1("Transaction Detail"),
-                span(transaction)
+                p(transaction),
+                a("Back to Transactions").withHref("/transactions")
             )
-
-        ).render().toString();
-            
-        
+        ).render();
     }
 
     private String renderTransactions() {
@@ -40,29 +38,37 @@ public class TransactionsController implements CrudHandler {
             ),
             body(
                 h1("Transactions"),
-        ul(
-            each(this.transactions.values(), t -> li(t))
-        ),
-        form().withMethod("post").with(
-            button("Add Transaction").withType("submit")
-        )
+                ul(
+                    each(this.transactions.entrySet(), entry ->
+                        li(
+                            a(entry.getValue()).withHref("/transactions/" + entry.getKey()),
+                            form().withMethod("post")
+                                .withAction("/transactions/" + entry.getKey())
+                                .with(
+                                    input().withType("hidden").withName("_method").withValue("DELETE"),
+                                    button("Delete").withType("submit")
+                                )
+                        )
+                    )
+                ),
+                form().withMethod("post").withAction("/transactions").with(
+                    input().withType("text").withName("transaction").withPlaceholder("Add a transaction"),
+                    button("Add Transaction").withType("submit")
+                )
             )
-        ).render().toString();
+        ).render();
     }
     @Override
-    // TransactionController.java
     public void getAll(Context ctx) {
-        // Use ctx to render all transactions html
-        ctx.render("jte/transactions.jte", Map.of("transactions", transactions));
+        ctx.html(renderTransactions());
     }
 
     @Override
     public void getOne(Context ctx, String resourceId) {
+        String transaction = transactions.get(resourceId);
 
-        String user = transactions.get(resourceId);
-
-        if (user != null) {
-            // Use ctx to render transaction html
+        if (transaction != null) {
+            ctx.html(renderSingleTransactions(resourceId));
         } else {
             ctx.status(404).result("Transaction not found");
         }
@@ -70,22 +76,36 @@ public class TransactionsController implements CrudHandler {
 
     @Override
     public void create(Context ctx) {
+        String body = ctx.formParam("transaction");
+        if (body == null) {
+            body = ctx.body();
+        }
 
-        String body = ctx.body();
+        if (body == null || body.isBlank()) {
+            ctx.status(400).result("Transaction cannot be empty");
+            return;
+        }
+
         String id = String.valueOf(transactions.size() + 1);
-
-        transactions.put(id, body);
-
-		// Use ctx to render all transactions html
+        transactions.put(id, body.trim());
+        ctx.redirect("/transactions");
     }
 
     @Override
     public void update(Context ctx, String resourceId) {
-
         if (transactions.containsKey(resourceId)) {
-            transactions.put(resourceId, ctx.body());
+            String body = ctx.formParam("transaction");
+            if (body == null) {
+                body = ctx.body();
+            }
 
-            // Use ctx to render all transactions html
+            if (body == null || body.isBlank()) {
+                ctx.status(400).result("Transaction cannot be empty");
+                return;
+            }
+
+            transactions.put(resourceId, body.trim());
+            ctx.redirect("/transactions/" + resourceId);
         } else {
             ctx.status(404).result("Transaction not found");
         }
@@ -93,7 +113,10 @@ public class TransactionsController implements CrudHandler {
 
     @Override
     public void delete(Context ctx, String resourceId) {
-
-        transactions.remove(resourceId);
-}
+        if (transactions.remove(resourceId) != null) {
+            ctx.redirect("/transactions");
+        } else {
+            ctx.status(404).result("Transaction not found");
+        }
+    }
 }
