@@ -1,4 +1,7 @@
 package edu.cwi;
+
+public class TransactionsController {
+    package edu.cwi;
 import io.javalin.apibuilder.CrudHandler;
 import io.javalin.http.Context;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,7 +65,9 @@ public class TransactionsController implements CrudHandler {
     public void getAll(Context ctx) {
         ctx.html(renderTransactions());
         // Use ctx to render all transactions html
-        ctx.render("jte/transactionsPage.jte", Map.of("transactions", transactions));
+        UserAccount account = new UserAccount("John Public", 500.00, transactions);
+	
+	    ctx.render("jte/accountPage.jte", Map.of("title", "Account Transactions", "account", account));
     }
 
     @Override
@@ -121,4 +126,4 @@ public class TransactionsController implements CrudHandler {
             ctx.status(404).result("Transaction not found");
         }
     }
-}
+
