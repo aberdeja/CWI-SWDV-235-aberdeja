@@ -126,5 +126,4 @@ public class TransactionsController implements CrudHandler {
             ctx.status(404).result("Transaction not found");
         }
     }
-}
-}
+
