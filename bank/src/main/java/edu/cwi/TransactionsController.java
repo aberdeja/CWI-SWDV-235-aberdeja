@@ -1,4 +1,5 @@
 package edu.cwi;
+
 import io.javalin.apibuilder.CrudHandler;
 import io.javalin.http.Context;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,7 +8,6 @@ import static j2html.TagCreator.*;
 
 public class TransactionsController implements CrudHandler {
     private final Map<String, String> transactions = new ConcurrentHashMap<>();
-
 
     public TransactionsController() {
         transactions.put("1", "Transaction 1");
@@ -18,42 +18,38 @@ public class TransactionsController implements CrudHandler {
         String transaction = transactions.get(id);
 
         return html(
-            head(
-                title("Transaction " + id),
-                link().withRel("stylesheet").withHref("/css/main.css")
-            ),
-            body(
-                h1("Transaction Detail"),
-                span(transaction)
-            )
+                head(
+                        title("Transaction " + id),
+                        link().withRel("stylesheet").withHref("/css/main.css")),
+                body(
+                        h1("Transaction Detail"),
+                        span(transaction))
 
         ).render().toString();
-            
-        
+
     }
 
     private String renderTransactions() {
         return html(
-            head(
-                title("Transactions"),
-                link().withRel("stylesheet").withHref("/css/main.css")
-            ),
-            body(
-                h1("Transactions"),
-        ul(
-            each(this.transactions.values(), t -> li(t))
-        ),
-        form().withMethod("post").with(
-            button("Add Transaction").withType("submit")
-        )
-            )
-        ).render().toString();
+                head(
+                        title("Transactions"),
+                        link().withRel("stylesheet").withHref("/css/main.css")),
+                body(
+                        h1("Transactions"),
+                        ul(
+                                each(this.transactions.values(), t -> li(t))),
+                        form().withMethod("post").with(
+                                button("Add Transaction").withType("submit"))))
+                .render().toString();
     }
+
     @Override
     // TransactionController.java
     public void getAll(Context ctx) {
         // Use ctx to render all transactions html
-        ctx.render("jte/transactionsPage.jte", Map.of("transactions", transactions));
+        UserAccount account = new UserAccount("John Public", 500.00, transactions);
+
+        ctx.render("jte/accountPage.jte", Map.of("title", "Account Transactions", "account", account));
     }
 
     @Override
@@ -76,7 +72,7 @@ public class TransactionsController implements CrudHandler {
 
         transactions.put(id, body);
 
-		// Use ctx to render all transactions html
+        // Use ctx to render all transactions html
     }
 
     @Override
@@ -95,5 +91,5 @@ public class TransactionsController implements CrudHandler {
     public void delete(Context ctx, String resourceId) {
 
         transactions.remove(resourceId);
-}
+    }
 }
