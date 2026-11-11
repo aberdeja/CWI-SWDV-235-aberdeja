@@ -11,7 +11,7 @@ public class AccountController {
         // if there's a user, render the accountpage.jte with the user account
         // otherwise, redirect to the unauthorized page
 
-        String userId = ctx.cookie("user-id");
+        String userId = ctx.cookieStore().get("user-id");
 
         if (userId == null || userId.isBlank()) {
             ctx.redirect("/unauthorized");
@@ -25,7 +25,7 @@ public class AccountController {
             return;
         }
 
-        ctx.render("accountPage.jte", Map.of("account", account));
+        ctx.render("jte/accountPage.jte", Map.of("account", account));
 
 
 

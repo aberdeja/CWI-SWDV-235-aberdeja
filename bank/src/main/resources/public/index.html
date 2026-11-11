@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://jsdelivr.net" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+      <div class="card-body">
+        <h3 class="card-title text-center mb-4">Sign In</h3>
+        
+        <form action="/login" method="POST">
+          <!-- Email Input -->
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" autocomplete="username" required>
+          </div>
+
+          <!-- Password Input -->
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
+          </div>
+
+          <!-- Remember Me & Forgot Password -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
+              <label class="form-check-label" for="rememberMe">Remember me</label>
+            </div>
+            <a href="#" class="text-decoration-none small">Forgot password?</a>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary w-100">Sign In</button>
+        </form>
+
+        <!-- Sign Up Link -->
+        <p class="text-center text-muted mt-4 mb-0 small">
+          Don't have an account? <a href="/register.html" class="text-decoration-none">Sign up</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
