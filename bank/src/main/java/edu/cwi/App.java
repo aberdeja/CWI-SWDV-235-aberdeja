@@ -41,6 +41,9 @@ public class App {
                 path("/account", List.of(AppRole.CUSTOMER), () -> {
                     get(AccountController::renderAccount); // requires CUSTOMER role
                 });
+                path("/users", List.of(AppRole.ADMIN), () -> {
+                    crud("/{id}", new UsersController()); 
+                });
 
                 get("/unauthorized", ctx -> ctx.result("Unauthorized: Please log in."));
             });
